@@ -22,13 +22,13 @@ export default function Home() {
       <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
         <a
           className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-blue-700 text-white gap-2 hover:bg-blue-600 text-base sm:text-lg h-12 sm:h-14 px-6 sm:px-8 shadow-xl hover:shadow-blue-500/50"
-          href="#submit"
+          href="https://huggingface.co/spaces/bbsc/hackohelper"
         >
           Submit Idea
         </a>
         <a
           className="rounded-full border border-solid border-white transition-colors flex items-center justify-center text-white gap-2 hover:bg-white hover:text-black text-base sm:text-lg h-12 sm:h-14 px-6 sm:px-8 shadow-xl hover:shadow-white/50"
-          href="#learn-more"
+          href="/create"
         >
           Create a team
         </a>

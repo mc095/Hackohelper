@@ -1,40 +1,59 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebaseConfig";
 import Link from "next/link";
 
-const JoinPage = () => {
-  const rooms = [
-    { id: 1, name: "Team Alpha", members: 3, idea: "AI-powered chatbot for healthcare" },
-    { id: 2, name: "Team Beta", members: 5, idea: "Smart farming solutions using IoT" },
-    { id: 3, name: "Team Gamma", members: 2, idea: "Blockchain for supply chain transparency" },
-    { id: 4, name: "Team Delta", members: 4, idea: "AR/VR experience for education" },
-    { id: 5, name: "Team Epsilon", members: 1, idea: "Fitness app with personalized training" },
-  ];
+// Define the Room type to match Firebase document fields
+interface Room {
+  id: string;
+  leaderName: string; // Assuming this is the field for Team Leader Name
+  email: string;
+  phoneNumber: string;
+  idea: string;
+  theme: string;
+}
+
+const JoinPage: React.FC = () => {
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      const roomsCollection = collection(db, "teams");
+      const roomsSnapshot = await getDocs(roomsCollection);
+      const roomList = roomsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(), // This assumes doc.data() returns a structure compatible with the Room type
+      })) as Room[]; // Make sure we assert the type correctly
+      setRooms(roomList);
+    };
+
+    fetchRooms();
+  }, []);
 
   return (
-    <div className="flex flex-col items-center p-6 bg-[#0a0b1e] min-h-screen">
-      <h1 className="text-2xl font-bold mb-4">Join a Team</h1>
-
-      <div className="flex flex-wrap justify-center w-full max-w-screen-lg">
-        {rooms.map((room) => (
-          <div
-            key={room.id}
-            className="flex flex-col justify-between items-start p-6 border border-white rounded-lg shadow-md bg-transparent w-full sm:w-1/2 md:w-1/3 mx-2 mb-4"
-          >
-            <div>
-              <h2 className="text-lg font-semibold text-white">{room.name}</h2>
-              <p className="text-white">{room.members} / 5 members</p>
-              <p className="text-gray-300 italic mt-2">{room.idea}</p>
-            </div>
-            <Link href={`/join/${room.id}`}>
-              <button
-                className="border border-white bg-transparent text-white py-2 px-4 rounded hover:bg-white hover:text-black transition-colors mt-4"
-                disabled={room.members >= 5}
-              >
-                {room.members < 5 ? "Join" : "Full"}
-              </button>
+    <div className="flex flex-col items-center p-8 bg-[#0a0b1e] min-h-screen">
+      <h1 className="text-3xl font-bold text-white mb-8">Join a Team</h1>
+      {rooms.length === 0 ? (
+        <div className="text-white text-xl">No rooms available.</div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-screen-xl">
+          {rooms.map(room => (
+            <Link key={room.id} href={`/join/${room.id}`}>
+              <div className="border border-white bg-[#1a1a2e] rounded-lg shadow-md p-8 cursor-pointer transition-transform transform hover:scale-105">
+                <h1 className="text-2xl font-bold text-white">{room.idea}</h1>
+                <h2 className="text-gray-300 italic text-lg mt-2">{room.leaderName}</h2>
+                <p className="text-gray-400 text-lg mt-4">
+                  Theme: <span className="font-medium">{room.theme}</span>
+                </p>
+              </div>
             </Link>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
