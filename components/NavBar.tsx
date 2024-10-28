@@ -1,13 +1,12 @@
-// components/NavBar.tsx
 "use client";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { auth } from "@/lib/firebaseConfig";
-import { signOut } from "firebase/auth";
+import { signOut, User } from "firebase/auth";
 
 const Navbar = () => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isOpen, setIsOpen] = useState(false); // State for mobile menu
 
   // Monitor authentication state
@@ -27,8 +26,8 @@ const Navbar = () => {
     }
   };
 
-  // Extract username without domain
-  const username = user ? user.email.split("@")[0] : "Logged out";
+  // Extract username without domain if user is logged in
+  const username = user ? user.email?.split("@")[0] : "Logged out";
 
   return (
     <nav className="relative flex items-center justify-between py-4 bg-gradient-to-r from-gray-900 via-black to-gray-900 shadow-md">

@@ -1,15 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebaseConfig";
 import Link from "next/link";
 
-// Define the Room type to match Firebase document fields
 interface Room {
   id: string;
-  leaderName: string; // Assuming this is the field for Team Leader Name
+  leaderName: string;
   email: string;
   phoneNumber: string;
   idea: string;
@@ -18,7 +16,6 @@ interface Room {
 
 const JoinPage: React.FC = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -26,8 +23,8 @@ const JoinPage: React.FC = () => {
       const roomsSnapshot = await getDocs(roomsCollection);
       const roomList = roomsSnapshot.docs.map(doc => ({
         id: doc.id,
-        ...doc.data(), // This assumes doc.data() returns a structure compatible with the Room type
-      })) as Room[]; // Make sure we assert the type correctly
+        ...doc.data(),
+      })) as Room[];
       setRooms(roomList);
     };
 

@@ -1,4 +1,4 @@
-"use client"; // Declare this as a client component
+"use client";
 
 import { useEffect, useState } from "react";
 import { db, auth } from "@/lib/firebaseConfig";
@@ -11,20 +11,20 @@ const CreatePage = () => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [idea, setIdea] = useState("");
-  const [ideaDescription, setIdeaDescription] = useState(""); // New state for idea description
+  const [ideaDescription, setIdeaDescription] = useState("");
   const [theme, setTheme] = useState("");
   const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState(""); // State for success message
+  const [successMessage, setSuccessMessage] = useState("");
   const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (!user) {
-        router.push("/login"); // Redirect to login if not authenticated
+        router.push("/login");
       }
     });
     return () => unsubscribe();
-  }, [auth, router]);
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,16 +36,15 @@ const CreatePage = () => {
         email,
         phoneNumber,
         idea,
-        ideaDescription, // Include the idea description
-        theme, // Include the theme
+        ideaDescription,
+        theme,
         createdAt: new Date(),
       };
 
-      // Save the team data to Firestore
       await addDoc(collection(db, "teams"), teamData);
-      setSuccessMessage("Room created successfully!"); // Set success message
-      setTimeout(() => setSuccessMessage(""), 3000); // Clear message after 3 seconds
-      router.push("/join"); // Redirect to /join
+      setSuccessMessage("Room created successfully!");
+      setTimeout(() => setSuccessMessage(""), 3000);
+      router.push("/join");
     } catch (error) {
       console.error("Error creating team:", error);
     } finally {
